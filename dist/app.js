@@ -62,8 +62,26 @@ const stories = {
     scale: 'In September 1–28, 2026, the supplied Audit CRM data reports 207,375 samples audited and a peak of 271 daily active auditors on September 25. These figures describe the product’s operating scale; they do not measure the incremental effect of this workflow change.',
     measures: [ ['Workflow efficiency', 'Allocation time and audit turnaround.'], ['Operational quality', 'Workload balance and exception resolution time.'] ]
   },
+  ai: {
+    number: '03', label: 'AI PRODUCT · SURVEY RESPONSE CLEANING',
+    title: 'AI cleaning, from requirements to adoption.',
+    lead: 'A live, adopted AI workflow for cleaning survey samples, including “other” cases and subjective responses.',
+    tags: ['Requirements & wireframes', 'QA & adoption', 'Continuous improvement'],
+    role: 'I owned requirements documentation, UI/UX wireframing, QA, and adoption. After adoption, I continued improving the workflow as project requirements changed.',
+    decisionsHeading: 'My work across the lifecycle',
+    decisions: [
+      'Document requirements for the survey-response cleaning workflow.',
+      'Translate requirements into UI/UX wireframes.',
+      'Carry out QA for the workflow.',
+      'Support adoption of the live capability.',
+      'Make regular improvements based on updated project requirements after adoption.'
+    ],
+    outcome: 'The AI-cleaning capability is live and adopted for survey samples. Product work continues after adoption as project needs evolve.',
+    scale: '66,992 AI-cleaned groups were reported for September 1–28, 2026. This is workflow volume, not a count of individual samples or a measured accuracy or time-saving result.',
+    measures: [ ['Cleaning quality', 'Agreement with human-reviewed decisions on a defined evaluation set.'], ['Adoption & efficiency', 'Repeat usage, manual corrections, and time required to complete cleaning.'] ]
+  },
   form: {
-    number: '03', label: 'PRODUCT QUALITY · FIELD AGENT CREATION',
+    number: '04', label: 'PRODUCT QUALITY · FIELD AGENT CREATION',
     title: 'A failed submission shouldn’t erase someone’s work.',
     lead: 'When the API rejected a field-agent creation request, the frontend cleared the entire form. A duplicate email or mobile number meant entering everything again.',
     tags: ['Frontend change', 'Error handling', 'Regression validation'],
@@ -108,7 +126,7 @@ function showStory(key, trigger) {
   if (!story) return;
   opener = trigger;
   document.querySelector('#story-number').textContent = story.number;
-  document.querySelector('#story-content').innerHTML = `<article class="story"><span class="story-label">${story.label}</span><h2 id="story-title">${story.title}</h2><p class="story-lead">${story.lead}</p><div class="story-meta">${story.tags.map(tag => `<span>${tag}</span>`).join('')}</div><section class="story-section"><h3>My contribution</h3><p>${story.role}</p></section><section class="story-section"><h3>Decisions that mattered</h3><ul>${story.decisions.map(decision => `<li>${decision}</li>`).join('')}</ul></section><section class="story-section outcome"><h3>What changed</h3><p>${story.outcome}</p></section>${story.demo ? '<section class="story-section"><h3>Try the interaction</h3><p>A simplified illustration of navigation and answer retention.</p><div id="interactive-demo" class="demo"></div></section>' : ''}<section class="story-section"><h3>How I’d evaluate it</h3><div class="measurement">${story.measures.map(([name, detail]) => `<div><strong>${name}</strong><span>${detail}</span></div>`).join('')}</div><p class="evidence-note">Measurement criteria, not quantified results. Verified impact data will be added when available.</p></section></article>`;
+  document.querySelector('#story-content').innerHTML = `<article class="story"><span class="story-label">${story.label}</span><h2 id="story-title">${story.title}</h2><p class="story-lead">${story.lead}</p><div class="story-meta">${story.tags.map(tag => `<span>${tag}</span>`).join('')}</div><section class="story-section"><h3>My contribution</h3><p>${story.role}</p></section><section class="story-section"><h3>${story.decisionsHeading || 'Decisions that mattered'}</h3><ul>${story.decisions.map(decision => `<li>${decision}</li>`).join('')}</ul></section><section class="story-section outcome"><h3>What changed</h3><p>${story.outcome}</p></section>${story.demo ? '<section class="story-section"><h3>Try the interaction</h3><p>A simplified illustration of navigation and answer retention.</p><div id="interactive-demo" class="demo"></div></section>' : ''}<section class="story-section"><h3>How I’d evaluate it</h3><div class="measurement">${story.measures.map(([name, detail]) => `<div><strong>${name}</strong><span>${detail}</span></div>`).join('')}</div><p class="evidence-note">Measurement criteria, not quantified results. Verified impact data will be added when available.</p></section></article>`;
   if (story.scale) {
     const section = document.createElement('section');
     section.className = 'story-section product-scale';
