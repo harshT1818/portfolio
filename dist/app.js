@@ -1,12 +1,155 @@
-const themeButton=document.querySelector('.theme');
-function themeLabel(){themeButton.setAttribute('aria-label',`Switch to ${document.documentElement.dataset.theme==='dark'?'light':'dark'} mode`)}
-themeLabel();themeButton.addEventListener('click',()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;try{localStorage.setItem('harsh-theme',theme)}catch{}themeLabel()});
-const questions=[{title:'What makes a product<br>feel reliable?',answers:['Predictable behavior','Clear feedback','Recovery when things go wrong']},{title:'Where do you start<br>with a complex workflow?',answers:['Understand the user’s task','Map the failure paths','Define success clearly']},{title:'What matters<br>after a release?',answers:['Observe real usage','Investigate friction','Learn and iterate']}];
-let current=0;const selections=[null,null,null];
-function renderQuestion(){document.querySelector('#question-count').textContent=`QUESTION 0${current+1} / 03`;document.querySelector('#question-title').innerHTML=questions[current].title;document.querySelector('#question-progress').style.width=`${(current+1)/3*100}%`;const answers=document.querySelector('#answers');answers.replaceChildren();questions[current].answers.forEach((answer,index)=>{const button=document.createElement('button');button.className='answer'+(selections[current]===index?' selected':'');button.textContent=answer;button.setAttribute('aria-pressed',String(selections[current]===index));button.addEventListener('click',()=>{selections[current]=index;renderQuestion()});answers.append(button)});document.querySelector('#previous').disabled=current===0;document.querySelector('#next-question').disabled=current===2}
-document.querySelector('#previous').addEventListener('click',()=>{if(current>0){current--;renderQuestion()}});document.querySelector('#next-question').addEventListener('click',()=>{if(current<2){current++;renderQuestion()}});renderQuestion();
-document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button))});document.querySelectorAll('[data-category]').forEach(card=>card.hidden=button.dataset.filter!=='all'&&card.dataset.category!==button.dataset.filter);document.querySelector('.project-grid').hidden=![...document.querySelectorAll('.project-grid article')].some(card=>!card.hidden)}));
-const stories={survey:{label:'SURVEY PLATFORM / FOCUSED QUESTION VIEW',title:'One question. A clearer signal.',problem:'A survey experience needed accurate question-level time tracking while accommodating conditional questions, revisits, and different input methods.',role:'My work covered requirements, UX flows, technical discussions, edge cases, and launch considerations.',decisions:['Keep one question active at a time, with Previous / Next navigation and a question panel.','Preserve answers when users revisit questions, and account for revisit timing.','Respect skip logic and hidden questions during navigation.','Validate required answers on final submission and focus the first invalid question.','Consider keyboard navigation, mobile swipe, long-question scrolling, feature flags, and backward compatibility.'],outcome:'The feature was designed around focused navigation and accurate question-time calculation. Quantified post-launch impact is not included in this portfolio yet.',measure:'Relevant measures: timing coverage and accuracy, survey completion, navigation errors, and interviewer feedback. These are measurement candidates, not claimed results.'},audit:{label:'OPERATIONS / AUDIT CRM',title:'Less coordination. More clarity.',problem:'Audio auditing requires work to reach the right auditors, exceptions to stay visible, and teams to understand the state of their workload.',role:'I helped define and deliver automated workload distribution, allocation logic, QA dashboards, exception handling, and operational tracking.',decisions:['Define allocation behavior alongside operational workflows.','Make workload and progress visible in auditor dashboards.','Treat exceptions as part of the core workflow.','Connect quality-control needs to product requirements and delivery.'],outcome:'Delivered capabilities included workload distribution and operational visibility. No efficiency or quality improvement percentage is claimed here.',measure:'Relevant measures: allocation time, audit turnaround, workload balance, and exception resolution time. Baselines and verified results will be added when available.'},form:{label:'PRODUCT QUALITY / FIELD AGENT CREATION',title:'Preserve the effort. Fix the error.',problem:'When an API rejected creation of a field agent, such as for a duplicate email or mobile number, the frontend cleared the entire form. Users had to enter everything again.',role:'I made a hands-on frontend change and validated the behavior across submission outcomes.',decisions:['Return success or failure from the API action.','Reset the form only after successful creation.','Retain entered values when server-side validation rejects the request.','Test frontend validation, API rejection, and successful creation separately.'],outcome:'Failed submissions retained the entered values, letting users correct the issue without re-entering the entire form.',measure:'Relevant measures: repeat-entry time, successful recovery after an error, and form abandonment. No unverified impact number is attached to this change.'}};
-const dialog=document.querySelector('#story-dialog');let opener;
-document.querySelectorAll('[data-story]').forEach(button=>button.addEventListener('click',()=>{opener=button;const s=stories[button.dataset.story];document.querySelector('#story-content').innerHTML=`<article class="story"><span class="eyebrow">${s.label}</span><h2 id="story-title">${s.title}</h2><h3>The problem</h3><p>${s.problem}</p><h3>My contribution</h3><p>${s.role}</p><h3>Decisions & details</h3><ul>${s.decisions.map(d=>`<li>${d}</li>`).join('')}</ul><h3>Outcome</h3><p class="outcome">${s.outcome}</p><h3>Measurement lens</h3><p>${s.measure}</p></article>`;dialog.showModal();dialog.scrollTop=0}));
-document.querySelector('.close-dialog').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close()}});dialog.addEventListener('close',()=>opener?.focus());
+const root = document.documentElement;
+const themeButton = document.querySelector('.theme-toggle');
+function syncTheme() {
+  const dark = root.dataset.theme === 'dark';
+  themeButton.setAttribute('aria-label', `Switch to ${dark ? 'light' : 'dark'} mode`);
+  document.querySelector('meta[name="theme-color"]').content = dark ? '#101318' : '#ffffff';
+}
+themeButton.addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem('harsh-theme', root.dataset.theme); } catch {}
+  syncTheme();
+});
+syncTheme();
+
+const email = 'harshlthaker18@gmail.com';
+const copyButton = document.querySelector('.copy-email');
+let copyTimer;
+copyButton.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(email);
+    copyButton.firstChild.textContent = 'Copied ';
+    document.querySelector('.copy-status').textContent = 'Email address copied to clipboard.';
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => { copyButton.firstChild.textContent = 'Copy email '; }, 2500);
+  } catch {
+    document.querySelector('.copy-status').classList.remove('sr-only');
+    document.querySelector('.copy-status').textContent = email;
+  }
+});
+
+const stories = {
+  survey: {
+    number: '01', label: 'PRODUCT DESIGN · SURVEY PLATFORM',
+    title: 'A focused flow for better timing data.',
+    lead: 'The goal was accurate question-level time tracking, with a survey experience that still handled conditional logic, revisits, and different devices.',
+    tags: ['Requirements', 'UX flows', 'Technical collaboration'],
+    role: 'My work covered requirement definition, UX flows, engineering discussions, edge cases, and launch considerations for a one-question-at-a-time survey flow.',
+    decisions: [
+      'Keep one question active at a time, with Previous / Next controls and a question navigation panel.',
+      'Preserve answers when a question is revisited, and account for time spent across revisits.',
+      'Respect display and skip logic so hidden questions cannot be reached through navigation.',
+      'Validate required answers on final submission, then focus the first invalid question.',
+      'Handle keyboard navigation, mobile swipe, long-question scrolling, feature flags, and backward compatibility.'
+    ],
+    outcome: 'The design connected focused navigation with question-level timing and defined how the flow should behave across revisits, hidden questions, and submission errors.',
+    measures: [ ['Primary signal', 'Coverage and accuracy of question-level timing.'], ['Guardrails', 'Survey completion, navigation errors, and interviewer feedback.'] ],
+    demo: true
+  },
+  audit: {
+    number: '02', label: 'WORKFLOW AUTOMATION · AUDIT CRM',
+    title: 'Bring structure to audit operations.',
+    lead: 'Audits need to reach the right people, workloads need to stay visible, and exceptions need a clear path through the operation.',
+    tags: ['Workflow definition', 'Allocation logic', 'Quality control'],
+    role: 'I helped define and deliver automated workload distribution, allocation logic, auditor dashboards, exception handling, and operational tracking.',
+    decisions: [
+      'Define allocation behavior around the operational workflow.',
+      'Give auditors and operations teams visibility into assigned work and progress.',
+      'Treat exception handling as a core product workflow.',
+      'Translate quality-control requirements into product behavior and delivery details.'
+    ],
+    outcome: 'The delivered capabilities included automated workload distribution, auditor dashboards, and exception tracking.',
+    scale: 'In September 1–28, 2026, the supplied Audit CRM data reports 207,375 samples audited and a peak of 271 daily active auditors on September 25. These figures describe the product’s operating scale; they do not measure the incremental effect of this workflow change.',
+    measures: [ ['Workflow efficiency', 'Allocation time and audit turnaround.'], ['Operational quality', 'Workload balance and exception resolution time.'] ]
+  },
+  form: {
+    number: '03', label: 'PRODUCT QUALITY · FIELD AGENT CREATION',
+    title: 'A failed submission shouldn’t erase someone’s work.',
+    lead: 'When the API rejected a field-agent creation request, the frontend cleared the entire form. A duplicate email or mobile number meant entering everything again.',
+    tags: ['Frontend change', 'Error handling', 'Regression validation'],
+    role: 'I made a hands-on frontend change and checked the behavior across validation errors, API rejections, and successful creation.',
+    decisions: [
+      'Return a success or failure result from the API action.',
+      'Reset the form only after a successful creation response.',
+      'Keep entered values intact when server-side validation rejects a request.',
+      'Test frontend validation, API rejection, and successful creation separately.'
+    ],
+    outcome: 'Failed submissions retained the entered values. Users could correct the issue without re-entering the entire form.',
+    measures: [ ['Recovery', 'Successful submission after an error.'], ['User effort', 'Repeat-entry time and form abandonment.'] ]
+  }
+};
+const dialog = document.querySelector('#story-dialog');
+let opener;
+const demoQuestions = [
+  { title: 'What makes a product feel reliable?', answers: ['Predictable behavior', 'Clear feedback', 'Recovery when something goes wrong'] },
+  { title: 'Where would you start with a complex workflow?', answers: ['Understand the user’s task', 'Map the failure paths', 'Define success clearly'] },
+  { title: 'What matters after a release?', answers: ['Observe actual usage', 'Investigate friction', 'Learn and iterate'] }
+];
+let question = 0;
+let selectedAnswers = [null, null, null];
+function renderDemo() {
+  const host = document.querySelector('#interactive-demo');
+  if (!host) return;
+  host.innerHTML = `<div class="demo-head"><span>ILLUSTRATIVE INTERACTION</span><span>QUESTION ${question + 1} OF 3</span></div><div class="demo-progress"><span style="width:${(question + 1) / 3 * 100}%"></span></div><h4 id="demo-question">${demoQuestions[question].title}</h4><div aria-labelledby="demo-question" role="group">${demoQuestions[question].answers.map((answer, i) => `<button class="demo-answer" data-answer="${i}" aria-pressed="${selectedAnswers[question] === i}">${answer}</button>`).join('')}</div><div class="demo-nav"><button data-step="-1" ${question === 0 ? 'disabled' : ''}>← Previous</button><span>Go back. Your answer stays.</span><button data-step="1" ${question === 2 ? 'disabled' : ''}>Next →</button></div>`;
+  host.querySelectorAll('[data-answer]').forEach(button => button.addEventListener('click', () => {
+    selectedAnswers[question] = Number(button.dataset.answer);
+    host.querySelectorAll('[data-answer]').forEach(option => option.setAttribute('aria-pressed', String(option === button)));
+  }));
+  host.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => {
+    const step = Number(button.dataset.step);
+    question = Math.max(0, Math.min(2, question + step));
+    renderDemo();
+    const control = host.querySelector(`[data-step="${step}"]`);
+    if (!control.disabled) control.focus(); else host.querySelector(`[data-step="${-step}"]`).focus();
+  }));
+}
+function showStory(key, trigger) {
+  const story = stories[key];
+  if (!story) return;
+  opener = trigger;
+  document.querySelector('#story-number').textContent = story.number;
+  document.querySelector('#story-content').innerHTML = `<article class="story"><span class="story-label">${story.label}</span><h2 id="story-title">${story.title}</h2><p class="story-lead">${story.lead}</p><div class="story-meta">${story.tags.map(tag => `<span>${tag}</span>`).join('')}</div><section class="story-section"><h3>My contribution</h3><p>${story.role}</p></section><section class="story-section"><h3>Decisions that mattered</h3><ul>${story.decisions.map(decision => `<li>${decision}</li>`).join('')}</ul></section><section class="story-section outcome"><h3>What changed</h3><p>${story.outcome}</p></section>${story.demo ? '<section class="story-section"><h3>Try the interaction</h3><p>A simplified illustration of navigation and answer retention.</p><div id="interactive-demo" class="demo"></div></section>' : ''}<section class="story-section"><h3>How I’d evaluate it</h3><div class="measurement">${story.measures.map(([name, detail]) => `<div><strong>${name}</strong><span>${detail}</span></div>`).join('')}</div><p class="evidence-note">Measurement criteria, not quantified results. Verified impact data will be added when available.</p></section></article>`;
+  if (story.scale) {
+    const section = document.createElement('section');
+    section.className = 'story-section product-scale';
+    const heading = document.createElement('h3');
+    heading.textContent = 'Product scale';
+    const copy = document.createElement('p');
+    copy.textContent = story.scale;
+    section.append(heading, copy);
+    document.querySelector('.story .outcome').after(section);
+  }
+  question = 0;
+  selectedAnswers = [null, null, null];
+  renderDemo();
+  dialog.showModal();
+  document.body.classList.add('dialog-open');
+  dialog.scrollTop = 0;
+  document.querySelector('.close-dialog').focus();
+}
+document.querySelectorAll('[data-story]').forEach(button => button.addEventListener('click', () => showStory(button.dataset.story, button)));
+document.querySelector('.close-dialog').addEventListener('click', () => dialog.close());
+dialog.addEventListener('click', event => {
+  if (event.target !== dialog) return;
+  const bounds = dialog.getBoundingClientRect();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+});
+dialog.addEventListener('close', () => {
+  document.body.classList.remove('dialog-open');
+  opener?.focus({ preventScroll: true });
+});
+
+const navigation = [...document.querySelectorAll('nav a')];
+if ('IntersectionObserver' in window) {
+  const visibleSections = new Set();
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) visibleSections.add(entry.target.id); else visibleSections.delete(entry.target.id);
+    }
+    const current = navigation.find(link => visibleSections.has(link.hash.slice(1)));
+    navigation.forEach(link => {
+      if (link === current) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+    });
+  }, { rootMargin: '-90px 0px -45% 0px' });
+  navigation.forEach(link => observer.observe(document.querySelector(link.hash)));
+}

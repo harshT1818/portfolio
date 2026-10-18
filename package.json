@@ -1,0 +1,10 @@
+{
+  "name": "harsh-thaker-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev-server.cjs",
+    "start": "node scripts/dev-server.cjs",
+    "check": "node --check dist/app.js"
+  }
+}

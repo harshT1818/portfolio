@@ -6,14 +6,22 @@ A responsive portfolio showcasing product ownership across survey, auditing, and
 
 - Light and dark themes with a saved preference
 - Responsive desktop and mobile layouts
-- Product stories and experience filters
+- Compact product overview and detailed work-story dialogs
 - An illustrative survey interaction with answer retention
-- Email, LinkedIn, and GitHub links
+- Email, LinkedIn, and GitHub links, plus a copy-email action
 - Planned sections for case studies, writing, and a PM simulator
 
 ## Local preview
 
-Open `dist/index.html` in a browser, or use VS Code's Live Server extension to serve the `dist` directory. No package installation or build command is required.
+With Node.js installed, open a terminal in this repository and run:
+
+```powershell
+npm run dev
+```
+
+Open **http://127.0.0.1:5173**. Keep the terminal running; refresh the page after edits. Press Ctrl+C to stop. No `npm install` is needed: the preview server uses Node's built-in modules only.
+
+You can also open `dist/index.html` directly or use VS Code's Live Server extension. The local server is recommended for browser features such as copying the email address.
 
 ## Deploy to Vercel
 
