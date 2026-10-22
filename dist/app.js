@@ -34,7 +34,7 @@ const stories = {
     title: 'A focused flow for better timing data.',
     lead: 'The goal was accurate question-level time tracking, with a survey experience that still handled conditional logic, revisits, and different devices.',
     tags: ['Requirements', 'UX flows', 'Development'],
-    role: 'I defined the requirements and UX flows, then developed the feature itself — building the one-question-at-a-time flow, its navigation, and its timing behaviour, and carrying it through edge cases, QA, and launch.',
+    role: 'I defined the requirements and UX flows, then developed the feature itself in JavaScript, JSX, and CSS — building the one-question-at-a-time flow, its navigation, and its timing behaviour, and carrying it through edge cases, QA, and launch.',
     decisions: [
       'Keep one question active at a time, with Previous / Next controls and a question navigation panel.',
       'Preserve answers when a question is revisited, and account for time spent across revisits.',
