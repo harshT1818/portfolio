@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-integrity="ok">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ship It — a product management decision simulator. Four quarters, twelve decisions, five paths each. Your early shortcuts decide how the year ends.">
+  <meta name="theme-color" content="#ffffff">
+  <title>Ship It — a PM decision simulator</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Harsh Thaker">
+  <meta property="og:title" content="Ship It — a PM decision simulator">
+  <meta property="og:description" content="Four quarters, twelve decisions, five paths each. Your early shortcuts decide how the year ends.">
+  <meta property="og:url" content="https://portfolio-harsh-thaker.vercel.app/simulator/">
+  <meta property="og:image" content="https://portfolio-harsh-thaker.vercel.app/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://portfolio-harsh-thaker.vercel.app/simulator/">
+  <script>try{var s=localStorage.getItem('harsh-theme');var t=(s==='dark'||s==='light')?s:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;document.querySelector('meta[name="theme-color"]').content=t==='dark'?'#0b0e13':'#ffffff'}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sim.css">
+  <script src="sim-data.js" defer></script>
+  <script src="sim.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#screen">Skip to content</a>
+
+  <header class="bar">
+    <a class="home" href="../">&larr; Harsh Thaker</a>
+    <span class="wordmark">Ship&nbsp;It <span class="tag">SIMULATOR</span></span>
+    <button id="theme" class="theme" aria-label="Switch colour theme"><span aria-hidden="true">◐</span></button>
+  </header>
+
+  <div id="metrics" class="metrics" aria-label="Current product metrics" hidden></div>
+
+  <main id="screen" tabindex="-1"></main>
+
+  <noscript>
+    <p class="noscript">This simulator needs JavaScript. The rest of the
+    <a href="../">portfolio</a> works without it.</p>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,171 @@
+/* Ship It — war-room interface.
+   Shares the portfolio's palette and token names so the two read as one system.
+   [data-integrity] degrades the interface as hidden tech debt accumulates. */
+
+:root{
+  --bg:#fff; --surface:#f7f8fa; --raised:#fff; --ink:#17202d; --secondary:#4e5b6b;
+  --muted:#67707d; --line:#e5e8ee; --accent:#245bdd; --accent-soft:#edf3ff;
+  --good:#0f7b4f; --bad:#b4342a; --warn:#9a6508;
+  --radius-xs:4px; --radius-sm:8px; --radius:12px;
+  color-scheme:light;
+}
+html[data-theme=dark]{
+  --bg:#0b0e13; --surface:#12161d; --raised:#161b24; --ink:#edf1f7; --secondary:#b5bdc9;
+  --muted:#8d99aa; --line:#242c38; --accent:#8caeff; --accent-soft:#17243c;
+  --good:#52d29a; --bad:#ff8a7a; --warn:#f0b24a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:'DM Sans',system-ui,Arial,sans-serif;font-size:16px;line-height:1.6;
+}
+h1,h2{font-weight:600;letter-spacing:-.8px;line-height:1.15;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.skip{position:fixed;top:-100px;left:16px;z-index:9;background:var(--accent);color:#fff;padding:10px 16px;border-radius:var(--radius-xs)}
+.skip:focus{top:10px}
+.noscript{max-width:640px;margin:80px auto;padding:0 20px;color:var(--secondary)}
+
+/* numerals are always monospace — metrics should read as instrumented */
+.m-val,.score-v,.tl-i,.opt-label b{font-family:'DM Mono','SF Mono',Consolas,monospace;font-variant-numeric:tabular-nums}
+
+/* ------------------------------------------------------------- chrome */
+.bar{
+  display:flex;align-items:center;gap:16px;
+  padding:12px 20px;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--bg);z-index:5;
+}
+.home{font-size:13px;text-decoration:none;color:var(--muted);white-space:nowrap}
+.home:hover{color:var(--ink)}
+.wordmark{margin-left:auto;font-weight:600;letter-spacing:-.3px}
+.tag{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.4px;
+  color:var(--muted);border:1px solid var(--line);border-radius:var(--radius-xs);
+  padding:2px 6px;margin-left:6px;vertical-align:2px;
+}
+.theme{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:transparent;line-height:1;font-size:18px}
+
+.metrics{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  border-bottom:1px solid var(--line);background:var(--surface);
+}
+.metric{padding:10px 16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.metric:last-child{border-right:0}
+.m-key{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.3px;color:var(--muted);text-transform:uppercase}
+.m-val{font-size:17px;font-weight:500}
+.m-d{font-family:'DM Mono',monospace;font-size:11px}
+.m-d.up{color:var(--good)}
+.m-d.down{color:var(--bad)}
+
+main{max-width:860px;margin:0 auto;padding:40px 20px 96px}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted)}
+.dim{opacity:.75}
+.primary{
+  margin-top:32px;background:var(--accent);color:#fff;border:0;
+  border-radius:var(--radius-sm);padding:13px 22px;font-weight:600;
+}
+.primary:hover{filter:brightness(1.08)}
+
+/* ---------------------------------------------------------- cold open */
+.cold{min-height:62vh;display:flex;flex-direction:column;justify-content:center;gap:14px;text-align:left}
+.cold .ghost{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);opacity:.7;margin-bottom:28px}
+.cold h1{font-size:clamp(34px,6vw,56px)}
+.cold .sub{color:var(--secondary);font-size:19px}
+.cold .primary{align-self:flex-start}
+
+/* ----------------------------------------------------------- briefing */
+.brief h2{font-size:clamp(22px,3.2vw,30px);font-weight:400;letter-spacing:-.4px;margin-top:14px;color:var(--secondary)}
+.targets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:28px}
+.target{border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px;display:flex;flex-direction:column;gap:4px;background:var(--raised)}
+
+/* ------------------------------------------------------------ meeting */
+.meet-head h2{font-size:clamp(24px,3.6vw,34px);margin-top:8px}
+.chat{margin:26px 0 30px;display:flex;flex-direction:column;gap:2px}
+.msg{padding:14px 16px;border-left:2px solid var(--line);background:var(--surface)}
+.msg+.msg{margin-top:8px}
+.msg-top{display:flex;align-items:baseline;gap:10px;margin-bottom:5px}
+.msg-top b{font-size:14px}
+.role{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.2px;color:var(--muted)}
+.msg p{font-size:15px;color:var(--secondary)}
+.msg.warn{border-left-color:var(--bad)}
+.msg.data{border-left-color:var(--accent)}
+.msg.push{border-left-color:var(--warn)}
+
+.options{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.opt{
+  text-align:left;background:var(--raised);border:1px solid var(--line);
+  border-radius:var(--radius-sm);padding:16px 18px;display:flex;flex-direction:column;gap:5px;
+  transition:border-color .12s,transform .12s;
+}
+.opt:hover{border-color:var(--accent);transform:translateX(2px)}
+.opt-label{font-weight:600;font-size:15px}
+.opt-detail{font-size:13.5px;color:var(--muted)}
+
+/* -------------------------------------------------------- consequence */
+.conseq h2{font-size:clamp(22px,3.2vw,30px);margin-top:8px}
+.conseq .detail{color:var(--muted);font-size:14.5px;margin-top:8px}
+.detonation{
+  margin-top:24px;padding:18px 20px;border-radius:var(--radius-sm);
+  border:1px solid var(--bad);background:color-mix(in srgb,var(--bad) 8%,transparent);
+}
+.det-head{font-weight:600;margin-bottom:6px}
+.detonation p{font-size:14.5px;color:var(--secondary)}
+.symptoms{margin-top:22px;border-top:1px solid var(--line);padding-top:16px;display:flex;flex-direction:column;gap:8px}
+.symptoms p{font-size:14px;color:var(--muted);font-style:italic}
+.rank{margin-top:26px;border-top:1px solid var(--line);padding-top:18px}
+.rank-v{font-size:26px;font-weight:600;letter-spacing:-.6px;margin-top:4px;text-transform:capitalize}
+.rank-0,.rank-1{color:var(--bad)}
+.rank-2{color:var(--warn)}
+.rank-3,.rank-4{color:var(--good)}
+.rank-note{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* ------------------------------------------------------------ results */
+.results .arch{font-size:clamp(32px,5.5vw,50px);margin-top:10px}
+.arch-line{color:var(--secondary);font-size:17px;margin-top:10px;max-width:60ch}
+.score{display:flex;align-items:baseline;gap:8px;margin-top:28px}
+.score-v{font-size:64px;font-weight:500;letter-spacing:-3px;line-height:1}
+.score-k{color:var(--muted);font-size:15px}
+.bars{margin-top:26px;display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:92px 1fr 36px;align-items:center;gap:12px}
+.track{height:6px;background:var(--line);border-radius:var(--radius-xs);overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent)}
+.hidden-reveal{margin-top:34px;border-top:1px solid var(--line);padding-top:18px}
+.hrow{display:grid;grid-template-columns:110px 1fr auto;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);align-items:center}
+.timeline{margin-top:28px}
+.tl-row{display:grid;grid-template-columns:40px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.tl-i{font-size:12px;color:var(--muted)}
+.tl-row p{font-size:14.5px}
+.compare{margin-top:26px;padding:14px 16px;background:var(--surface);border-radius:var(--radius-sm);font-size:14px;color:var(--secondary)}
+.footnote{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:62ch}
+
+/* ------------------------------------------- diegetic degradation
+   The interface itself gets worse as hidden tech debt climbs. Never
+   announced; the player should feel it before naming it. */
+html[data-integrity=sev1] .m-val{transition:opacity .28s}
+html[data-integrity=sev2] .metric{transition:transform .3s}
+html[data-integrity=sev2] .metric:nth-child(3){transform:translateY(1px)}
+html[data-integrity=sev2] .m-val{opacity:.94}
+html[data-integrity=sev3] .metrics{border-bottom-color:var(--bad)}
+html[data-integrity=sev3] .metric:nth-child(3){transform:translateY(1px) translateX(1px)}
+html[data-integrity=sev3] .metric:nth-child(4){transform:translateY(-1px)}
+html[data-integrity=sev3] .m-val{opacity:.88}
+html[data-integrity=sev3] .msg{border-left-style:dashed}
+
+@media (max-width:760px){
+  .metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .metric:nth-child(n+4){border-top:1px solid var(--line)}
+  .metric{padding:9px 12px}
+  .m-val{font-size:15px}
+  .targets{grid-template-columns:1fr}
+  main{padding:28px 18px 72px}
+  .bar{padding:10px 14px;gap:10px}
+  .wordmark{font-size:14px}
+  .bar{display:grid;grid-template-columns:auto 1fr auto}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  html[data-integrity] .metric{transform:none!important}
+}
