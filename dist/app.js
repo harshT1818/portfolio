@@ -30,11 +30,11 @@ copyButton.addEventListener('click', async () => {
 
 const stories = {
   survey: {
-    number: '01', label: 'PRODUCT DESIGN · SURVEY PLATFORM',
+    number: '01', label: 'PRODUCT & DEVELOPMENT · SURVEY PLATFORM',
     title: 'A focused flow for better timing data.',
     lead: 'The goal was accurate question-level time tracking, with a survey experience that still handled conditional logic, revisits, and different devices.',
-    tags: ['Requirements', 'UX flows', 'Technical collaboration'],
-    role: 'My work covered requirement definition, UX flows, engineering discussions, edge cases, and launch considerations for a one-question-at-a-time survey flow.',
+    tags: ['Requirements', 'UX flows', 'Development'],
+    role: 'I defined the requirements and UX flows, then developed the feature itself — building the one-question-at-a-time flow, its navigation, and its timing behaviour, and carrying it through edge cases, QA, and launch.',
     decisions: [
       'Keep one question active at a time, with Previous / Next controls and a question navigation panel.',
       'Preserve answers when a question is revisited, and account for time spent across revisits.',
