@@ -147,6 +147,8 @@ function showStory(key, trigger) {
 }
 document.querySelectorAll('[data-story]').forEach(button => button.addEventListener('click', () => showStory(button.dataset.story, button)));
 document.querySelector('.close-dialog').addEventListener('click', () => dialog.close());
+// The dialog is modal, so it has to close before the contact anchor can scroll to the form.
+document.querySelector('.dialog-contact').addEventListener('click', () => dialog.close());
 dialog.addEventListener('click', event => {
   if (event.target !== dialog) return;
   const bounds = dialog.getBoundingClientRect();
