@@ -47,12 +47,36 @@ Alternatively, run `npx vercel@latest` from the repository root for a preview de
 
 ```text
 dist/
-  index.html    Page content and contact links
+  index.html    Page content, contact links, and the contact form
   styles.css    Layout, responsive styles, and theme tokens
-  app.js        Product stories and interactions
+  app.js        Product stories, interactions, and contact form validation
 vercel.json     Static deployment configuration
 ```
 
 Place future images and a resume PDF inside `dist/` and link them from the page. Add verified metrics with their reporting periods and definitions when available. Future projects are labeled as planned until implemented.
 
 Google Fonts supplies the display fonts, with system fallbacks. Theme preference is stored in the visitor's browser. Survey responses remain in memory and reset on reload. The site has no backend or analytics.
+
+## Contact form
+
+The contact section carries a form requiring name, email, and message. All three are mandatory and
+are validated in the browser: on blur, again on input once a field has been flagged, and on submit,
+which focuses the first invalid field. Errors are announced through `aria-describedby`, and a
+`role="status"` region reports the outcome.
+
+There is no server receiving submissions. By default the form opens the visitor's mail client with
+a pre-filled `mailto:`, which depends on them having one configured. To receive submissions
+directly, set one constant in `dist/app.js`:
+
+```js
+const CONTACT_ENDPOINT = 'https://formspree.io/f/xxxxxxx';
+```
+
+Any endpoint accepting a JSON `POST` of `{name, email, message}` works, such as Formspree,
+Web3Forms, or a serverless function. Nothing else changes: the submit button disables while the
+request is in flight, success clears the form, and a failure keeps what the visitor typed and
+points them at the email address.
+
+An off-screen `cf-note` field acts as a honeypot. It is `aria-hidden` and removed from the tab
+order, and its name avoids the standard autofill tokens so browsers will not populate it and cause
+real messages to be dropped.

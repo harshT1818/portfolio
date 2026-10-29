@@ -171,3 +171,81 @@ if ('IntersectionObserver' in window) {
   }, { rootMargin: '-90px 0px -45% 0px' });
   navigation.forEach(link => observer.observe(document.querySelector(link.hash)));
 }
+
+/* Contact form: validate in the browser, then hand the message off. */
+const contactForm = document.querySelector('#contact-form');
+const contactStatus = document.querySelector('#form-status');
+const CONTACT_ENDPOINT = '';
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+const FIELD_RULES = {
+  name: value => !value ? 'Please enter your name.'
+    : value.length < 2 ? 'Please use at least 2 characters.' : '',
+  email: value => !value ? 'Please enter your email address.'
+    : !EMAIL_PATTERN.test(value) ? 'Please enter a valid email address, like you@company.com.' : '',
+  message: value => !value ? 'Please enter a message.'
+    : value.length < 10 ? 'Please add a little more detail — at least 10 characters.' : '',
+};
+
+function setFormStatus(text, tone) {
+  contactStatus.textContent = text;
+  if (tone) contactStatus.dataset.tone = tone; else delete contactStatus.dataset.tone;
+}
+
+function validateField(name) {
+  const field = contactForm.elements[name];
+  const message = FIELD_RULES[name](field.value.trim());
+  field.setAttribute('aria-invalid', message ? 'true' : 'false');
+  document.querySelector(`#cf-${name}-error`).textContent = message;
+  return !message;
+}
+
+Object.keys(FIELD_RULES).forEach(name => {
+  const field = contactForm.elements[name];
+  field.addEventListener('blur', () => validateField(name));
+  field.addEventListener('input', () => {
+    if (field.getAttribute('aria-invalid') === 'true') { validateField(name); setFormStatus(''); }
+  });
+});
+
+contactForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  const invalid = Object.keys(FIELD_RULES).filter(name => !validateField(name));
+  if (invalid.length) {
+    setFormStatus(`Please fix the ${invalid.length === 1 ? 'highlighted field' : `${invalid.length} highlighted fields`} above.`, 'error');
+    contactForm.elements[invalid[0]].focus();
+    return;
+  }
+  const sent = 'Thanks — your message has been sent. I usually reply within a couple of days.';
+  // A person never sees this field, so anything in it came from a bot.
+  if (contactForm.elements['cf-note'].value) { contactForm.reset(); setFormStatus(sent, 'ok'); return; }
+  const payload = {
+    name: contactForm.elements.name.value.trim(),
+    email: contactForm.elements.email.value.trim(),
+    message: contactForm.elements.message.value.trim(),
+  };
+  const submitButton = contactForm.querySelector('button[type="submit"]');
+  if (CONTACT_ENDPOINT) {
+    submitButton.disabled = true;
+    setFormStatus('Sending…');
+    try {
+      const response = await fetch(CONTACT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) throw new Error(response.status);
+      contactForm.reset();
+      Object.keys(FIELD_RULES).forEach(name => contactForm.elements[name].setAttribute('aria-invalid', 'false'));
+      setFormStatus(sent, 'ok');
+    } catch {
+      setFormStatus(`That didn't go through. Please email ${email} directly.`, 'error');
+    } finally {
+      submitButton.disabled = false;
+    }
+    return;
+  }
+  const subject = encodeURIComponent(`Portfolio enquiry from ${payload.name}`);
+  const body = encodeURIComponent(`${payload.message}\n\n—\n${payload.name}\n${payload.email}`);
+  window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  setFormStatus(`Opening your email app with this message ready to send. If nothing opens, write to ${email}.`, 'ok');
+});
